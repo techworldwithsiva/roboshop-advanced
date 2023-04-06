@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: catalogue-config
+  namespace: roboshop
 data:
   MONGO_URL: "mongodb://mongodb:27017/catalogue"
 ---
@@ -10,6 +11,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: catalogue
+  namespace: roboshop
   labels:
     name: catalogue
     tier: app
@@ -39,6 +41,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: catalogue
+  namespace: roboshop
 spec:
   selector:
     name: catalogue
