@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalogue-config
+data:
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogue
+  labels:
+    name: catalogue
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: catalogue
+      tier: app
+  template:
+    metadata:
+      labels:
+        name: catalogue
+        tier: app
+    spec:
+      containers:
+      - name: catalogue
+        imagePullPolicy: Always
+        image: techworldwithsiva/catalogue:v1
+        envFrom:
+        - configMapRef:
+          name: catalogue-config
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogue
+spec:
+  selector:
+    name: catalogue
+    tier: app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
