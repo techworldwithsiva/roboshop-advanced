@@ -26,7 +26,7 @@ spec:
       name: mongodb # has to match .spec.template.metadata.labels
       tier: db
   serviceName: "mongodb"
-  replicas: 3 # by default is 1
+  replicas: 1 # by default is 1
   minReadySeconds: 10 # by default is 0
   template:
     metadata:
