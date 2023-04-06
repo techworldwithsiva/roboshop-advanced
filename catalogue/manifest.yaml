@@ -33,7 +33,7 @@ spec:
         image: techworldwithsiva/catalogue:v1
         envFrom:
         - configMapRef:
-          name: catalogue-config
+            name: catalogue-config
         ports:
         - containerPort: 80
 ---
