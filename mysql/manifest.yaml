@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: techworldwithsiva/mysql:v1
+        image: techworldwithsiva/mysql:k8
         ports:
         - containerPort: 3306
           name: mysql

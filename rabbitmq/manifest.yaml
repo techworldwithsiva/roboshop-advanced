@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rabbitmq
+  labels:
+    name: rabbitmq
+    tier: db
+spec:
+  containers:
+  - name: rabbitmq
+    imagePullPolicy: Always
+    image: rabbitmq
+    ports:
+      - containerPort: 5672
+      - containerPort: 15672
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+spec:
+  clusterIP: None
+  selector:
+    name: rabbitmq
+    tier: db
+  ports:
+  - port: 5672
+    name: amqp
+  - port: 15672
+    name: http
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+  namespace: roboshop
+spec:
+  selector:
+    matchLabels:
+      name: rabbitmq # has to match .spec.template.metadata.labels
+      tier: db
+  serviceName: "rabbitmq"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      labels:
+        name: rabbitmq # has to match .spec.template.metadata.labels
+        tier: db
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:v1
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: http
+        volumeMounts:
+        - name: rabbitmq-volume
+          mountPath: /var/lib/rabbitmq
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs-sc"
+      resources:
+        requests:
+          storage: 1Gi
