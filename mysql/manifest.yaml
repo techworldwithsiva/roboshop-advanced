@@ -52,12 +52,18 @@ spec:
       containers:
       - name: mysql
         image: techworldwithsiva/mysql:k8
+        envFrom:
+        - configMapRef:
+            name: mysql-config
+        - secretRef:
+            name: mysql-secret
         ports:
         - containerPort: 3306
           name: mysql
         volumeMounts:
         - name: mysql-volume
           mountPath: /var/lib/mysql
+        
   volumeClaimTemplates:
   - metadata:
       name: mysql-volume

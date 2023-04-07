@@ -1,19 +1,4 @@
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: rabbitmq
-  labels:
-    name: rabbitmq
-    tier: db
-spec:
-  containers:
-  - name: rabbitmq
-    imagePullPolicy: Always
-    image: rabbitmq
-    ports:
-      - containerPort: 5672
-      - containerPort: 15672
+
 ---
 apiVersion: v1
 kind: Service
@@ -29,7 +14,6 @@ spec:
     name: amqp
   - port: 15672
     name: http
-  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -51,7 +35,7 @@ spec:
     spec:
       containers:
       - name: rabbitmq
-        image: rabbitmq:v1
+        image: rabbitmq
         ports:
         - containerPort: 5672
           name: amqp
