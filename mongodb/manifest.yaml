@@ -27,14 +27,12 @@ spec:
       tier: db
   serviceName: "mongodb"
   replicas: 1 # by default is 1
-  minReadySeconds: 10 # by default is 0
   template:
     metadata:
       labels:
         name: mongodb # has to match .spec.template.metadata.labels
         tier: db
     spec:
-      terminationGracePeriodSeconds: 10
       containers:
       - name: mongodb
         image: techworldwithsiva/mongodb:v1
@@ -43,13 +41,13 @@ spec:
           name: mongodb
         volumeMounts:
         - name: mongodb-volume
-          mountPath: /data
+          mountPath: /data/db
   volumeClaimTemplates:
   - metadata:
       name: mongodb-volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "efs-sc"
+      storageClassName: "ebs-sc"
       resources:
         requests:
           storage: 1Gi
