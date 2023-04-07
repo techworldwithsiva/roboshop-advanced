@@ -1,0 +1,52 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-config
+data:
+  REDIS_HOST: "redis"
+  MONGO_URL: "mongodb://mongodb:27017/catalogue"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: roboshop
+  labels:
+    name: user
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: user
+      tier: app
+  template:
+    metadata:
+      labels:
+        name: user
+        tier: app
+    spec:
+      containers:
+      - name: user
+        imagePullPolicy: Always
+        image: techworldwithsiva/user:v1
+        envFrom:
+        - configMapRef:
+            name: user-config
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  namespace: roboshop
+spec:
+  selector:
+    name: user
+    tier: app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
