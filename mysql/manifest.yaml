@@ -1,0 +1,69 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+data:
+  MYSQL_DATABASE: "cities"
+  MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  MYSQL_USER: c2hpcHBpbmc=
+  MYSQL_PASSWORD: c2VjcmV0
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  clusterIP: None
+  selector:
+    name: mysql
+    tier: db
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+      name: mysql
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: roboshop
+spec:
+  selector:
+    matchLabels:
+      name: mysql # has to match .spec.template.metadata.labels
+      tier: db
+  serviceName: "mysql"
+  replicas: 1 # by default is 1
+  template:
+    metadata:
+      labels:
+        name: mysql # has to match .spec.template.metadata.labels
+        tier: db
+    spec:
+      containers:
+      - name: mysql
+        image: techworldwithsiva/mysql:v1
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-volume
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "ebs-sc"
+      resources:
+        requests:
+          storage: 1Gi
