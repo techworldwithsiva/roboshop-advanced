@@ -142,3 +142,23 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: web-hpa
+  namespace: roboshop
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: web
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Object
+    resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
