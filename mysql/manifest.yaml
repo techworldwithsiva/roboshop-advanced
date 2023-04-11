@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-config
+  namespace: roboshop
 data:
   MYSQL_DATABASE: "cities"
   MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
@@ -11,6 +12,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
+  namespace: roboshop
 type: Opaque
 data:
   MYSQL_USER: c2hpcHBpbmc=
@@ -20,6 +22,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: mysql
+  namespace: roboshop
 spec:
   clusterIP: None
   selector:
