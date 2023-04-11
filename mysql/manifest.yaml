@@ -55,7 +55,7 @@ spec:
       containers:
       - name: mysql
         image: techworldwithsiva/mysql:k8
-        command: ["/entrypoint.sh", "--initialize"]
+        imagePullPolicy: Always
         envFrom:
         - configMapRef:
             name: mysql-config
