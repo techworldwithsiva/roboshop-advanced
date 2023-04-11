@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shipping-config
+  namespace: roboshop
+data:
+  CART_ENDPOINT: "cart"
+  DB_HOST: "mysql"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shipping
+  namespace: roboshop
+  labels:
+    name: shipping
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: shipping
+      tier: app
+  template:
+    metadata:
+      labels:
+        name: shipping
+        tier: app
+    spec:
+      containers:
+      - name: shipping
+        imagePullPolicy: Always
+        image: techworldwithsiva/shipping:k8
+        envFrom:
+        - configMapRef:
+            name: shipping-config
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shipping
+  namespace: roboshop
+spec:
+  selector:
+    name: shipping
+    tier: app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+
