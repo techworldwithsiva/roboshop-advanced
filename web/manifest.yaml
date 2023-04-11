@@ -107,6 +107,13 @@ spec:
       - name: web
         imagePullPolicy: Always
         image: techworldwithsiva/web:k8
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "156Mi"
+          limits:
+            cpu: "150m"
+            memory: "256Mi"
         ports:
         - containerPort: 80
         volumeMounts:
